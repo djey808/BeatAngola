@@ -19,22 +19,17 @@ jobs:
         run: |
           mkdir project
           unzip -q beat_angola_project_v1_0_android_build.zip -d project
-
-          PUBSPEC=$(find project -name pubspec.yaml -print -quit)
-
-          if [ -z "$PUBSPEC" ]; then
-            echo "pubspec.yaml não encontrado"
-            exit 1
-          fi
-
-          PROJECT_DIR=$(dirname "$PUBSPEC")
-          echo "PROJECT_DIR=$PROJECT_DIR" >> "$GITHUB_ENV"
+          echo "PROJECT_DIR=project/app" >> "$GITHUB_ENV"
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
           channel: stable
           cache: true
+
+      - name: Generate Android project
+        working-directory: ${{ env.PROJECT_DIR }}
+        run: flutter create --platforms=android .
 
       - name: Install dependencies
         working-directory: ${{ env.PROJECT_DIR }}
